@@ -64,6 +64,9 @@ def LucasKanadeAffine(It, It1, threshold, num_iters):
         # print(np.shape(b))
         
         dp = (np.linalg.inv(A.T @ A)) @ (A.T @ b)
+
+        # H = A.T @ A
+        # dp = np.linalg.inv(H) @ A.T @ (It[commonpts] - It1x_warp)
         # print(np.shape(dp))
         p+=dp
         

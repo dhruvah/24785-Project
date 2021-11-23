@@ -31,24 +31,27 @@ def LucasKanade(It, It1, rect, threshold, num_iters, p0=np.zeros(2)):
     x = np.arange(x1, x2 + 1)
     y = np.arange(y1, y2 + 1)
     x, y = np.meshgrid(x,y)
+
+    alpha = 10
     
     while np.linalg.norm(dp)>= threshold and count <= num_iters:
         count += 1
         
         Itx = It_spline.ev(y, x).flatten()
         It1x_warp = It1_spline.ev(y+p[1], x+p[0]).flatten()
-        A = np.array([
+        G = np.array([
             It1_spline.ev(y+p[1], x+p[0], dx = 0, dy = 1).flatten(),
             It1_spline.ev(y+p[1], x+p[0], dx = 1, dy = 0).flatten()]).T
         
-        # print(np.shape(A))
-    
-        b = (Itx - It1x_warp).flatten()
+        # # print(np.shape(G))
+        # b = (Itx - It1x_warp).flatten()
+        # # print(np.shape(b))
+        # dp = (np.linalg.inv(G.T @ G)) @ (G.T @ b)
         
-        # print(np.shape(b))
-        
-        dp = (np.linalg.inv(A.T @ A)) @ (A.T @ b)
-        
+        H = G.T @ G
+        dp = np.linalg.inv(H) @ G.T @ (Itx - It1x_warp) # Gauss-Newton
+        # dp = alpha * (G.T @ (Itx - It1x_warp))          # Gradient Descent
+
         p+=dp
         
     
