@@ -15,7 +15,6 @@ def AffineLucasKanade(It, It1, rect, threshold, num_iters):
     
     p = M[0:2, 0:3].flatten()
     
-    # x1, y1, x2, y2 = 0, 0, It.shape[1] -1, It.shape[0] -1
     x1, y1, x2, y2 = rect[0], rect[1], rect[2], rect[3]
     
     It_spline=RectBivariateSpline(np.arange(It.shape[0]),
@@ -43,36 +42,23 @@ def AffineLucasKanade(It, It1, rect, threshold, num_iters):
         warpX = p[0] * X + p[1] * Y + p[2]
         warpY = p[3] * X + p[4] * Y + p[5]
         
-        # commonpts = np.where((warpX >= x1) & (warpX <= x2) & 
-        #                      (warpY >= y1) & (warpY <= y2), True, False) 
-        
-        # X, Y = X[commonpts], Y[commonpts]
-        # warpX, warpY = warpX[commonpts], warpY[commonpts]
-        
         dwx = It1_spline.ev(warpY, warpX, dx = 0, dy = 1).flatten()
         dwy = It1_spline.ev(warpY, warpX, dx = 1, dy = 0).flatten()
         
         It1x_warp = It1_spline.ev(warpY, warpX)
         
-        A = np.array([dwx*X.flatten(),
+        G = np.array([dwx*X.flatten(),
                       dwx*Y.flatten(),
                       dwx,
                       dwy*X.flatten(),
                       dwy*Y.flatten(),
                       dwy]).T
         
-        # b = (It[commonpts] - It1x_warp).flatten()
         b = (Itx - It1x_warp).flatten()
-        # print(np.shape(A))
-    
-        
-        # print(np.shape(b))
-        
-        dp = (np.linalg.inv(A.T @ A)) @ (A.T @ b)
+            
+        H = G.T @ G
+        dp = (np.linalg.inv(H)) @ (G.T @ b)
 
-        # H = A.T @ A
-        # dp = np.linalg.inv(H) @ A.T @ (It[commonpts] - It1x_warp)
-        # print(np.shape(dp))
         p+=dp
         
     M = np.vstack((p.reshape(2,3), M[2,0:3]))

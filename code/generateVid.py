@@ -3,8 +3,8 @@ import os
 
 def generate_video(): 
     # image_folder = '../dataset/coke_results/' # make sure to use your folder 
-    image_folder = '../dataset/dog_results_affine/' # make sure to use your folder
-    video_name = 'dog_affine.avi'
+    image_folder = '../dataset/bike_results_affine/' # make sure to use your folder
+    video_name = 'biker_bfgs.avi'
       
     images = [img for img in os.listdir(image_folder)] 
   
@@ -17,7 +17,7 @@ def generate_video():
   
     # Appending the images to the video one by one 
     for i in range(len(images)):  
-        video.write(cv2.imread(os.path.join(image_folder, 'dog_tracking%02d.jpg' % i)))  
+        video.write(cv2.imread(os.path.join(image_folder, "biker_tracking%02d.jpg" % i))) 
       
     # Deallocating memories taken for window creation 
     cv2.destroyAllWindows()  
