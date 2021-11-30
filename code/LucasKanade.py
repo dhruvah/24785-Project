@@ -38,10 +38,10 @@ def LucasKanade_GN(It, It1, rect, threshold, num_iters, p0=np.zeros(2)):
         count += 1
         
         
-        It1x_warp = It1_spline.ev(y+p[1], x+p[0]).flatten()
+        It1x_warp = It1_spline.ev(Y+p[1], X+p[0]).flatten()
         G = np.array([
-            It1_spline.ev(y+p[1], x+p[0], dx = 0, dy = 1).flatten(),
-            It1_spline.ev(y+p[1], x+p[0], dx = 1, dy = 0).flatten()]).T
+            It1_spline.ev(Y+p[1], X+p[0], dx = 0, dy = 1).flatten(),
+            It1_spline.ev(Y+p[1], X+p[0], dx = 1, dy = 0).flatten()]).T
 
         b = Itx - It1x_warp
         H = G.T @ G
