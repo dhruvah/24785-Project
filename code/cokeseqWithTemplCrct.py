@@ -24,12 +24,12 @@ p0 = np.zeros(2)
 cokerects_wcrt = np.array(rect)
 num_frames = len(img_sorted)
 
-template_threshold = 5
+template_threshold = -1
 
 im0 = img_sorted[0]
 T1x = cv2.imread(str(im0), cv2.IMREAD_GRAYSCALE)
 It = cv2.imread(str(im0), cv2.IMREAD_GRAYSCALE)
-
+i = 0
 for frame in range(num_frames - 1):
     
     im1 = img_sorted[frame+1]
@@ -39,8 +39,9 @@ for frame in range(num_frames - 1):
     p_n = p + [rect[0] - rect0[0], rect[1] - rect0[1]]
     
     pstar_n = LucasKanade(T1x, It1, rect0, threshold, num_iters, p_n)
-    # print(p_n, pstar_n)
+    print(p_n, pstar_n)
     
+    # print(np.linalg.norm(p_n - pstar_n))
     if np.linalg.norm(p_n - pstar_n) < template_threshold:
         pstar = pstar_n - [rect[0] - rect0[0], rect[1] - rect0[1]]
         
@@ -55,11 +56,16 @@ for frame in range(num_frames - 1):
         cokerects_wcrt = np.vstack((cokerects_wcrt, rect))
         p0 = p
     
+    # plt.savefig("../dataset/coke_crct_results/coke_tracking%02d.jpg" % i)
+    i = i + 1
 
-frameindex = [1, 100, 200, 300, 400]    
+# frameindex = [1, 100, 200, 300, 400]    
 cokeseqrects = np.load("../result/cokeseqrects.npy")
+# img_path = glob.glob("../dataset/coke_results/coke_tracking*.jpg")
+# img_sorted = sorted([x for x in img_path])
 
-for i in range(num_frames):
+
+for i in range(num_frames - 1):
     rect = cokeseqrects[i,:]
     rect_wcrt = cokerects_wcrt[i,:]
     
